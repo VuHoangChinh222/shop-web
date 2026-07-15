@@ -80,7 +80,8 @@ const ProductDetailView = ({ params, addToCart, navigate }) => {
         // Load Variants
         productVariantService.getVariantsByProductId(data.id)
           .then(res => {
-            const activeVariants = res.content ? res.content.filter(v => v.status === 1) : [];
+            const list = res?.content || res?.Content || (Array.isArray(res) ? res : []);
+            const activeVariants = list.filter(v => v.status === 1);
             setVariants(activeVariants);
 
             if (activeVariants.length > 0) {
