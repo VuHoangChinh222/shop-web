@@ -85,7 +85,7 @@ const ProductDetailView = ({ params, addToCart, navigate }) => {
             setVariants(activeVariants);
 
             if (activeVariants.length > 0) {
-              const colors = [...new Set(activeVariants.map(v => v.color).filter(Boolean))];
+              const colors = [...new Set(activeVariants.map(v => v.color).filter(c => c && c !== 'Mặc định'))];
               setAvailableColors(colors);
               if (colors.length > 0) setSelectedColor(colors[0]);
             }
