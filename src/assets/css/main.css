@@ -1,0 +1,480 @@
+:root {
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --bg-card-hover: #334155;
+    --accent: #f97316;
+    --accent-hover: #ea580c;
+    --accent-neon: rgba(249, 115, 22, 0.5);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Inter', sans-serif;
+    --border-color: #334155;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-heading);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+input,
+select,
+textarea,
+button {
+    font-family: var(--font-body);
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+/* Page Transition */
+.page-transition {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Common Container */
+.page-container {
+    padding: 3rem 5%;
+    min-height: 70vh;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.page-title span {
+    color: var(--accent);
+}
+
+
+
+/* Hero Section */
+.hero {
+    position: relative;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    overflow: hidden;
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.4;
+}
+
+.hero-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.4) 50%, rgba(15, 23, 42, 0.1) 100%);
+}
+
+.hero-content {
+    max-width: 600px;
+    animation: fadeIn 1s ease forwards;
+}
+
+.hero-tag {
+    color: var(--accent);
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    display: inline-block;
+}
+
+.hero-title {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+
+.hero-title span {
+    color: var(--accent);
+}
+
+.hero-desc {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    color: white;
+    box-shadow: 0 4px 15px var(--accent-neon);
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.6);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+}
+
+.btn-outline:hover {
+    background-color: var(--accent);
+    color: white;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+/* Products Section */
+.products-section {
+    padding: 4rem 5%;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+}
+
+.categories {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.category-btn {
+    background: transparent;
+    color: var(--text-muted);
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--border-color);
+    border-radius: 30px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.category-btn:hover,
+.category-btn.active {
+    background-color: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-neon);
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+
+
+
+
+
+/* Forms & Inputs */
+.form-card {
+    background: var(--bg-card);
+    padding: 2.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    background: rgba(15, 23, 42, 0.5);
+    color: white;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    transition: border 0.3s;
+}
+
+.form-input:focus {
+    border-color: var(--accent);
+    outline: none;
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+}
+
+/* Payment Methods */
+.payment-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.payment-card {
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s;
+    background: rgba(15, 23, 42, 0.5);
+}
+
+.payment-card:hover {
+    border-color: var(--text-muted);
+}
+
+.payment-card.active {
+    border-color: var(--accent);
+    background: rgba(249, 115, 22, 0.1);
+    box-shadow: 0 0 15px var(--accent-neon);
+}
+
+.payment-card i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-muted);
+    transition: color 0.3s;
+}
+
+.payment-card.active i {
+    color: var(--accent);
+}
+
+.payment-card span {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Search */
+.search-bar-large {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--text-muted);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    color: var(--border-color);
+}
+
+/* User Info & About */
+.user-profile {
+    display: flex;
+    gap: 2rem;
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 12px;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.about-content p {
+    margin-bottom: 1.5rem;
+}
+
+.about-content strong {
+    color: white;
+}
+
+
+
+/* Responsive Media Queries */
+
+
+@media (max-width: 768px) {
+
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .hero {
+        height: 60vh;
+    }
+
+
+
+    .search-bar-large {
+        flex-direction: column;
+    }
+
+    .user-profile {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* ==========================================================================
+   BỘ PHÂN TRANG TOÀN CỤC (Áp dụng đồng nhất cho danh sách Sản phẩm & Tin tức)
+   ========================================================================== */
+
+/* Khung bọc bộ phân trang (căn giữa các nút bấm, tạo khoảng giãn trên dưới) */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* Khoảng cách giữa các nút */
+    margin-top: 3.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Các nút bấm số trang và nút Trước/Sau */
+.page-btn {
+    background-color: #f4f4f5; /* Nền xám sáng */
+    border: 1px solid #e4e4e7; /* Viền xám mờ */
+    color: #18181b; /* Màu chữ tối dễ đọc */
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out; /* Hiệu ứng chuyển tiếp mượt mà */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hiệu ứng di chuột vào nút (hover) - ngoại trừ nút bị vô hiệu hóa */
+.page-btn:hover:not(:disabled) {
+    background-color: #e4e4e7; /* Đổi nền xám đậm hơn chút */
+}
+
+/* Kiểu hiển thị cho trang hiện tại đang được chọn (Active) */
+.page-btn.active {
+    background-color: #f97316; /* Nền màu cam thương hiệu */
+    color: white; /* Chữ trắng */
+    border-color: #f97316; /* Viền trùng màu nền */
+}
+
+/* Kiểu hiển thị khi nút bị vô hiệu hóa (ví dụ nút Trước khi ở trang 1) */
+.page-btn:disabled {
+    opacity: 0.4; /* Độ mờ 40% */
+    cursor: not-allowed; /* Con trỏ dạng cấm */
+}
+
+/* Ẩn con mắt hiển thị mật khẩu mặc định của trình duyệt Microsoft Edge/IE */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}

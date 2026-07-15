@@ -1,0 +1,388 @@
+/* 
+ * PRODUCT VIEW - STYLESHEET
+ * Sinh viên: Vũ Hoàng Chính
+ * Môn học: Chuyên đề WEB 2 & ReactJS
+ */
+
+.product-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 30px;
+    margin-top: 2rem;
+}
+
+.product-sidebar {
+    height: fit-content;
+    position: sticky;
+    top: 100px;
+}
+
+.product-main {
+    min-height: 50vh;
+}
+
+/* Lưới hiển thị 4 sản phẩm trên một hàng khi có sidebar */
+.products-grid-4-columns {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+
+
+.loading-text {
+    text-align: center;
+    padding: 4rem;
+    font-size: 16px;
+    color: #71717a;
+}
+
+.section-header-custom {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.section-header-custom .section-title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #ffffff 0%, var(--text-muted) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.section-header-custom .section-subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 1200px) {
+    .products-grid-4-columns {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 992px) {
+    .product-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .product-sidebar {
+        position: static;
+    }
+
+    .products-grid-4-columns {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .products-grid-4-columns {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+}
+
+/* === BỘ LỌC GIÁ SẢN PHẨM Ở SIDEBAR === */
+.product-price-filter-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    margin-top: 1.5rem;
+}
+
+.product-price-filter-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.product-price-filter-title i {
+    color: var(--accent);
+}
+
+.price-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.price-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.price-input-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: left;
+}
+
+.price-input-group input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: rgba(15, 23, 42, 0.6);
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+    color: var(--text-main);
+}
+
+.price-input-group input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-neon);
+}
+
+.price-filter-error {
+    color: #ef4444;
+    font-size: 0.775rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.3;
+    text-align: left;
+}
+
+.price-filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-apply-filter {
+    flex: 1;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-apply-filter:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.btn-apply-filter:disabled {
+    background: #334155;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+.btn-clear-filter {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-clear-filter:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+/* === THANH TÌM KIẾM SẢN PHẨM TRÊN ĐẦU LƯỚI === */
+.product-main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.product-count-summary {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.product-count-summary strong {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.product-search-box {
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    padding: 4px 6px 4px 16px;
+    width: 320px;
+    max-width: 100%;
+    transition: all 0.25s ease;
+}
+
+.product-search-box:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-neon);
+}
+
+.product-search-box .search-icon {
+    color: var(--text-muted);
+    margin-right: 8px;
+    font-size: 0.9rem;
+}
+
+.product-search-box input {
+    border: none;
+    outline: none;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    width: 100%;
+    background: transparent;
+}
+
+.product-search-box .search-clear-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px;
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s;
+}
+
+.product-search-box .search-clear-btn:hover {
+    color: white;
+}
+
+.product-search-box .search-btn {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+    border: none;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.product-search-box .search-btn:hover {
+    opacity: 0.9;
+}
+
+/* === BỘ LỌC MÀU SẮC & SIZE Ở SIDEBAR === */
+.product-filter-card {
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border-color);
+    margin-top: 1.5rem;
+}
+
+.product-filter-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+.product-filter-title i {
+    color: var(--accent);
+}
+
+.filter-color-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.filter-color-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-color-item:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.filter-color-item.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+}
+
+.filter-size-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.filter-size-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-size-item:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.filter-size-item.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+}

@@ -1,0 +1,454 @@
+/* 
+ * USERINFOVIEW COMPONENT - CSS STYLESHEET
+ * Sinh viên: Vũ Hoàng Chính
+ * Môn học: Chuyên đề WEB 2 & ReactJS
+ */
+
+.user-profile-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 1rem 0;
+}
+
+/* Khung thông tin cá nhân */
+.user-profile-header {
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #e4e4e7);
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.user-profile-avatar-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: 800;
+    box-shadow: 0 5px 15px var(--accent-neon);
+    overflow: hidden;
+}
+
+.user-profile-avatar-circle .user-profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-profile-details {
+    flex: 1;
+}
+
+.user-profile-name {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--text-main, #18181b);
+    margin: 0;
+}
+
+.user-profile-meta {
+    font-size: 0.95rem;
+    color: var(--text-muted, #71717a);
+    margin: 6px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.user-profile-badge-row {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+/* Huy hiệu hạng thành viên */
+.rank-badge {
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.rank-badge.rank-none {
+    background-color: #f4f4f5;
+    color: #71717a;
+    border: 1px solid #e4e4e7;
+}
+
+.rank-badge.rank-bronze {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.rank-badge.rank-silver {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.rank-badge.rank-gold {
+    background-color: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fef3c7;
+}
+
+.rank-badge.rank-diamond {
+    background-color: #ecfeff;
+    color: #0891b2;
+    border: 1px solid #c5f6fa;
+}
+
+.user-profile-logout-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+}
+
+.user-profile-logout-btn:hover {
+    background-color: var(--accent);
+    color: white;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}
+
+/* Lịch sử đơn hàng */
+.orders-section-card {
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #e4e4e7);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.orders-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--text-main, #18181b);
+}
+
+.orders-table-wrapper {
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.orders-table th {
+    padding: 12px 16px;
+    border-bottom: 2px solid var(--border-color, #e4e4e7);
+    color: var(--text-muted, #71717a);
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.orders-table td {
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color, #e4e4e7);
+    font-size: 0.95rem;
+    color: var(--text-main, #18181b);
+    white-space: nowrap;
+}
+
+.orders-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.orders-table tbody tr:hover {
+    background-color: rgba(249, 115, 22, 0.05);
+}
+
+/* Trạng thái hóa đơn màu sắc */
+.status-pill {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.status-pill.status-pending {
+    background-color: #ffedd5;
+    color: #ea580c;
+}
+
+.status-pill.status-shipping {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.status-pill.status-completed {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .user-profile-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+    .user-profile-logout-btn {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .user-profile-meta {
+        justify-content: center;
+    }
+
+    .user-profile-badge-row {
+        justify-content: center;
+    }
+}
+
+.user-profile-badge-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.user-profile-spent-amount {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-left: 10px;
+}
+
+.user-profile-spent-val {
+    color: var(--accent);
+}
+
+.orders-title-icon {
+    margin-right: 8px;
+}
+
+.user-profile-loading {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--text-muted);
+}
+
+.user-profile-loading-icon {
+    margin-right: 8px;
+}
+
+.user-profile-empty {
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.user-profile-empty-icon {
+    font-size: 2.5rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.user-profile-empty-text {
+    color: var(--text-muted);
+}
+
+.orders-table-notes {
+    font-style: italic;
+    font-size: 0.85rem;
+    white-space: normal;
+    min-width: 150px;
+}
+
+/* ==========================================================================
+   FORM CHỈNH SỬA THÔNG TIN CÁ NHÂN (USERINFO.JSX)
+   ========================================================================== */
+
+/* Khung bọc form cập nhật thông tin */
+.user-info-card {
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #e4e4e7);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+/* Từng dòng bao gồm nhãn nhập và input */
+.user-info-form-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.user-info-form-group label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main, #18181b);
+}
+
+/* Đánh dấu dấu sao đỏ cho trường bắt buộc */
+.user-info-form-group label span {
+    color: #ef4444;
+}
+
+/* Các trường nhập liệu của form */
+.user-info-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--border-color, #334155);
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.5);
+    /* Đồng bộ nền tối với các ô nhập liệu khác trong dự án */
+    color: var(--text-main, #f8fafc);
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+/* Trạng thái focus (tô đậm viền màu cam đặc trưng) */
+.user-info-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.2);
+}
+
+/* Trạng thái vô hiệu hóa (ví dụ trường Email không được sửa) */
+.user-info-input:disabled {
+    background: rgba(15, 23, 42, 0.8);
+    /* Nền tối hẳn khi bị vô hiệu hóa */
+    border-color: rgba(51, 65, 85, 0.5);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Hàng chứa các nút bấm */
+.user-info-btn-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* Nút Lưu thông tin */
+.user-info-btn-save {
+    flex: 2;
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.user-info-btn-save:hover:not(:disabled) {
+    background: #ea580c;
+    box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+}
+
+/* Nút Hủy bỏ/Quay lại */
+.user-info-btn-cancel {
+    flex: 1;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.user-info-btn-cancel:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--text-main);
+}
+
+/* Bộ bọc các nút hành động trên trang tổng quan tài khoản */
+.user-profile-actions-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* Nút Chỉnh sửa thông tin màu cam chủ đạo */
+.user-profile-edit-btn {
+    background-color: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.user-profile-edit-btn:hover {
+    background-color: #ea580c;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}
+
+@media (max-width: 768px) {
+    .user-profile-actions-wrapper {
+        width: 100%;
+        flex-direction: row;
+        /* Dàn ngang khi hiển thị trên di động */
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .user-profile-actions-wrapper button {
+        flex: 1;
+    }
+}

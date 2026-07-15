@@ -1,0 +1,546 @@
+/* 
+ * PRODUCTDETAILVIEW COMPONENT - DYNAMIC DATABASE API INTEGRATION
+ * Sinh viên: Vũ Hoàng Chính
+ * Môn học: Chuyên đề WEB 2 & ReactJS
+ */
+
+import { useState, useEffect } from 'react';
+import productService from '../../services/productService';
+import productImageService from '../../services/productImageService';
+import productVariantService from '../../services/productVariantService';
+import { getCookie } from '../../utils/cookieHelper';
+import IsLoading from '../../components/IsLoading';
+import '../../assets/css/productCSS/ProductDetail.css';
+import { resolveImageUrl } from '../../config';
+
+const formatPrice = (price) => new Intl.NumberFormat('vi-VN').format(price) + ' VND';
+
+const ProductDetailView = ({ params, addToCart, navigate }) => {
+  const productSlug = params.slug;
+  const productId = params.id;
+  const [product, setProduct] = useState(null);
+  const [size, setSize] = useState('');
+  const [qty, setQty] = useState(1);
+  const [stockWarning, setStockWarning] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Variant States
+  const [variants, setVariants] = useState([]);
+  const [availableColors, setAvailableColors] = useState([]);
+  const [availableSizes, setAvailableSizes] = useState([]);
+  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedSize, setSelectedSize] = useState('');
+  const [currentVariant, setCurrentVariant] = useState(null);
+
+  // Image Gallery state
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [activeImage, setActiveImage] = useState('');
+
+  // Tăng số lượng mua an toàn
+  const incrementQty = () => {
+    if (qty < stockQuantity) {
+      setQty(prev => prev + 1);
+      setStockWarning(false);
+    } else {
+      setStockWarning(true);
+    }
+  };
+
+  // Giảm số lượng mua an toàn
+  const decrementQty = () => {
+    if (qty > 1) {
+      setQty(prev => prev - 1);
+      setStockWarning(false);
+    }
+  };
+
+  // 1. Tải chi tiết sản phẩm từ API (ưu tiên gọi theo Slug, fallback ID)
+  useEffect(() => {
+    if (!productSlug && !productId) return;
+    setLoading(true);
+
+    const fetchPromise = productSlug
+      ? productService.getProductBySlug(productSlug)
+      : productService.getProductById(productId);
+
+    fetchPromise
+      .then(data => {
+        setProduct(data);
+        const mainImage = data.image || data.imageUrl || '';
+        setActiveImage(mainImage);
+
+        // Load gallery images
+        productImageService.getByProductId(data.id)
+          .then(images => {
+            setGalleryImages(images);
+          })
+          .catch(e => console.log(e));
+
+        // Load Variants
+        productVariantService.getVariantsByProductId(data.id)
+          .then(res => {
+            const activeVariants = res.content ? res.content.filter(v => v.status === 1) : [];
+            setVariants(activeVariants);
+
+            if (activeVariants.length > 0) {
+              const colors = [...new Set(activeVariants.map(v => v.color).filter(Boolean))];
+              setAvailableColors(colors);
+              if (colors.length > 0) setSelectedColor(colors[0]);
+            }
+          })
+          .catch(e => console.log(e));
+
+        setQty(1);
+        setStockWarning(false);
+        setLoading(false);
+        // Chọn size mặc định
+        const category = data.categoryName || '';
+        if (category.toLowerCase().includes('giày') || category.toLowerCase().includes('shoe')) {
+          setSize('US 8');
+        } else if (category.toLowerCase().includes('vớ') || category.toLowerCase().includes('tất')) {
+          setSize('Free');
+        } else if (category.toLowerCase().includes('quả') || category.toLowerCase().includes('bóng')) {
+          setSize('7');
+        } else {
+          setSize('M');
+        }
+      })
+      .catch(err => {
+        console.error("Lỗi khi tải chi tiết sản phẩm:", err);
+        setError("Không thể tải chi tiết sản phẩm này.");
+        setLoading(false);
+      });
+  }, [productSlug, productId]);
+
+  // Handle color changes to update available sizes
+  useEffect(() => {
+    if (variants.length > 0 && selectedColor) {
+      const sizesForColor = variants
+        .filter(v => v.color === selectedColor)
+        .map(v => v.size)
+        .filter(Boolean);
+
+      const uniqueSizes = [...new Set(sizesForColor)];
+      setAvailableSizes(uniqueSizes);
+      if (uniqueSizes.length > 0 && !uniqueSizes.includes(selectedSize)) {
+        setSelectedSize(uniqueSizes[0]);
+      }
+    }
+  }, [selectedColor, variants]);
+
+  // Handle current variant selection
+  useEffect(() => {
+    if (variants.length > 0 && selectedColor && selectedSize) {
+      const variant = variants.find(v => v.color === selectedColor && v.size === selectedSize);
+      setCurrentVariant(variant);
+      setQty(1); // Reset qty on variant change
+      setStockWarning(false);
+
+      // Tìm xem có ảnh gallery phụ nào được gán nhãn màu này không
+      const colorSpecificGalleryImg = galleryImages.find(img => img.color && img.color.trim().toLowerCase() === selectedColor.trim().toLowerCase());
+      if (colorSpecificGalleryImg) {
+        setActiveImage(colorSpecificGalleryImg.imageUrl);
+      } else if (variant && variant.imageUrl) {
+        setActiveImage(variant.imageUrl);
+      } else {
+        const variantWithImg = variants.find(v => v.color === selectedColor && v.imageUrl);
+        if (variantWithImg && variantWithImg.imageUrl) {
+          setActiveImage(variantWithImg.imageUrl);
+        } else if (product) {
+          setActiveImage(product.image || product.imageUrl || '');
+        }
+      }
+    } else {
+      setCurrentVariant(null);
+    }
+  }, [selectedColor, selectedSize, variants, product, galleryImages]);
+
+  // Chuyển đổi thẻ oembed từ CKEditor thành iframe phát video thời gian thực
+  useEffect(() => {
+    if (!product) return;
+
+    const timer = setTimeout(() => {
+      const container = document.querySelector('.description-content');
+      if (container) {
+        const oembeds = container.querySelectorAll('oembed');
+        oembeds.forEach(oembed => {
+          const url = oembed.getAttribute('url');
+          if (url) {
+            let embedUrl = '';
+
+            // Phân tích đường dẫn Youtube
+            const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const ytMatch = url.match(ytRegex);
+            if (ytMatch && ytMatch[1]) {
+              embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}`;
+            }
+
+            // Phân tích đường dẫn Vimeo
+            const vimeoRegex = /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^\/]+)\/videos\/|album\/(?:\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/i;
+            const vimeoMatch = url.match(vimeoRegex);
+            if (vimeoMatch && vimeoMatch[1]) {
+              embedUrl = `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+            }
+
+            if (embedUrl) {
+              const iframe = document.createElement('iframe');
+              iframe.src = embedUrl;
+              iframe.width = "100%";
+              iframe.height = "480";
+              iframe.setAttribute('frameborder', '0');
+              iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+              iframe.setAttribute('allowfullscreen', 'true');
+              iframe.style.borderRadius = "8px";
+              iframe.style.marginTop = "15px";
+              iframe.style.marginBottom = "15px";
+              iframe.style.boxShadow = "0 4px 15px rgba(0,0,0,0.3)";
+
+              if (oembed.parentNode) {
+                oembed.parentNode.replaceChild(iframe, oembed);
+              }
+            }
+          }
+        });
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [product]);
+
+  if (loading) {
+    return <IsLoading message="Đang tải chi tiết sản phẩm..." />;
+  }
+
+  if (error || !product) {
+    return (
+      <div className="detail-error-container">
+        <i className="fa-solid fa-circle-exclamation detail-error-icon"></i>
+        <h2>Lỗi!</h2>
+        <p className="detail-error-message">{error || "Không tìm thấy sản phẩm này."}</p>
+        <button className="btn btn-primary" onClick={() => navigate('home')}>Quay lại Trang Chủ</button>
+      </div>
+    );
+  }
+
+  // Quyết định các kích cỡ hỗ trợ
+  const category = product.categoryName || '';
+  const sizes = (category.toLowerCase().includes('giày') || category.toLowerCase().includes('shoe'))
+    ? ['US 7', 'US 8', 'US 9', 'US 10', 'US 11']
+    : (category.toLowerCase().includes('vớ') || category.toLowerCase().includes('tất'))
+      ? ['Free']
+      : (category.toLowerCase().includes('quả') || category.toLowerCase().includes('bóng'))
+        ? ['5', '6', '7']
+        : ['S', 'M', 'L', 'XL'];
+
+  // Chuẩn hóa và bảo vệ số lượng tồn kho và giá cả
+  const stockQuantity = currentVariant
+    ? (currentVariant.stockQuantity !== null ? currentVariant.stockQuantity : 0)
+    : (product.stockQuantity !== undefined && product.stockQuantity !== null ? product.stockQuantity : 0);
+
+  const displayPrice = currentVariant
+    ? (currentVariant.salePrice > 0 ? currentVariant.salePrice : (currentVariant.price || product.price))
+    : (product.discountPrice || product.basePrice || product.price);
+
+  const originalPrice = currentVariant
+    ? (currentVariant.salePrice > 0 && currentVariant.price > currentVariant.salePrice ? currentVariant.price : null)
+    : (product.discountPrice && product.basePrice > product.discountPrice ? product.basePrice : null);
+
+  // Xử lý thêm vào giỏ hàng
+  const handleAdd = () => {
+    // KHÓA BẢO MẬT: Bắt buộc đăng nhập
+    const customer = getCookie('customer');
+    if (!customer) {
+      alert("Hệ thống bảo mật: Bạn phải đăng nhập để thêm sản phẩm vào giỏ hàng!");
+      navigate('login');
+      return;
+    }
+
+    if (stockQuantity <= 0) {
+      alert("Sản phẩm đã hết hàng!");
+      return;
+    }
+
+    if (qty > stockQuantity) {
+      alert("Số lượng sản phẩm trong kho không đủ!");
+      return;
+    }
+
+    const colorSpecificImg = galleryImages.find(img => img.color && img.color.trim().toLowerCase() === selectedColor.trim().toLowerCase());
+    const cartItemImage = colorSpecificImg ? colorSpecificImg.imageUrl : (product.image || product.imageUrl);
+
+    const productForCart = {
+      id: product.id,
+      name: product.name,
+      price: displayPrice,
+      image: resolveImageUrl(cartItemImage, 'src/assets/images/shoe_product_1_1778727884422.png'),
+      categoryName: product.categoryName,
+      stockQuantity: stockQuantity,
+      variantId: currentVariant ? currentVariant.id : null,
+      color: selectedColor || 'Mặc định',
+      size: availableSizes.length > 0 ? selectedSize : size
+    };
+
+    const success = addToCart(productForCart, productForCart.size, qty, selectedColor);
+    if (success) {
+      // navigate('cart');
+      // Hiển thị thông báo thành công
+      alert("Đã thêm sản phẩm vào giỏ hàng!");
+    }
+  };
+
+  const getOrderedThumbnails = () => {
+    const list = [];
+    if (selectedColor) {
+      const colorSpecific = galleryImages.filter(img => img.color && img.color.trim().toLowerCase() === selectedColor.trim().toLowerCase());
+      list.push(...colorSpecific);
+    }
+    const mainImgUrl = product.image || product.imageUrl;
+    if (mainImgUrl) {
+      if (!list.some(img => img.imageUrl === mainImgUrl)) {
+        list.push({ id: 'main', imageUrl: mainImgUrl, isMain: true });
+      }
+    }
+    const generalImages = galleryImages.filter(img => !img.color || !selectedColor || img.color.trim().toLowerCase() === selectedColor.trim().toLowerCase());
+    generalImages.forEach(img => {
+      if (!list.some(existing => existing.imageUrl === img.imageUrl)) {
+        list.push(img);
+      }
+    });
+
+    if (!selectedColor && list.some(img => img.isMain)) {
+      const mainIdx = list.findIndex(img => img.isMain);
+      if (mainIdx > 0) {
+        const [mainImg] = list.splice(mainIdx, 1);
+        list.unshift(mainImg);
+      }
+    }
+    return list;
+  };
+
+  const imageSrc = product.image || resolveImageUrl(product.imageUrl, 'src/assets/images/shoe_product_1_1778727884422.png');
+
+  return (
+    <div className="page-container page-transition">
+      <button onClick={() => navigate('home')} className="btn btn-outline detail-back-button">
+        <i className="fa-solid fa-arrow-left"></i> Quay lại cửa hàng
+      </button>
+
+      <div className="detail-grid">
+        <div className="detail-gallery-container">
+          <div className="detail-img">
+            <img
+              src={resolveImageUrl(activeImage, 'src/assets/images/shoe_product_1_1778727884422.png')}
+              alt={product.name}
+              key={activeImage}
+              className="fade-in-image"
+            />
+          </div>
+
+          {getOrderedThumbnails().length > 0 && (
+            <div className="detail-thumbnails">
+              {getOrderedThumbnails().map((img, idx) => (
+                <div
+                  key={img.id || idx}
+                  onClick={() => setActiveImage(img.imageUrl)}
+                  className={`thumbnail-item ${activeImage === img.imageUrl ? 'active' : ''}`}
+                >
+                  <img src={resolveImageUrl(img.imageUrl)} alt="Thumbnail" />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="detail-info">
+          <div className="product-category-badge">
+            <i className="fa-solid fa-tag"></i> {product.categoryName}
+          </div>
+
+          <h1 className="detail-name-heading">{product.name}</h1>
+
+          <div className="detail-price-wrap">
+            {originalPrice ? (
+              <>
+                <span className="detail-price">{formatPrice(displayPrice)}</span>
+                <span className="detail-original-price">{formatPrice(originalPrice)}</span>
+                <span className="detail-sale-badge">SALE</span>
+              </>
+            ) : (
+              <span className="detail-price">{formatPrice(displayPrice)}</span>
+            )}
+
+            {stockQuantity > 20 && (
+              <span className="detail-status-badge">
+                <i className="fa-solid fa-fire"></i> Best Seller
+              </span>
+            )}
+          </div>
+
+          <p className="detail-short-desc">
+            Sản phẩm chính hãng với thiết kế đột phá, mang lại trải nghiệm tuyệt vời nhất.
+            Được chế tác từ các vật liệu cao cấp, phù hợp cho cả hoạt động thể thao cường độ cao và phong cách thời trang năng động hàng ngày.
+          </p>
+
+          <div className="detail-stock-row">
+            {stockQuantity > 0 ? (
+              <span className="detail-badge-instock">
+                Còn hàng: {stockQuantity} sản phẩm
+              </span>
+            ) : (
+              <span className="detail-badge-outofstock">
+                Hết hàng
+              </span>
+            )}
+          </div>
+
+          {/* Color Selector */}
+          {availableColors.length > 0 && (
+            <>
+              <span className="detail-section-title">Màu sắc / Color: <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>{selectedColor}</span></span>
+              <div className="color-selector">
+                {availableColors.map(c => (
+                  <button
+                    key={c}
+                    className={`color-btn ${selectedColor === c ? 'active' : ''}`}
+                    onClick={() => setSelectedColor(c)}
+                    title={c}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Size Selector */}
+          {availableSizes.length > 0 ? (
+            <>
+              <span className="detail-section-title">Kích cỡ / Size: <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>{selectedSize}</span></span>
+              <div className="size-selector">
+                {availableSizes.map(s => {
+                  const v = variants.find(vr => vr.color === selectedColor && vr.size === s);
+                  const sStock = v ? v.stockQuantity : 0;
+                  return (
+                    <button
+                      key={s}
+                      className={`size-btn ${selectedSize === s ? 'active' : ''} ${sStock <= 0 ? 'out-of-stock' : ''}`}
+                      onClick={() => setSelectedSize(s)}
+                      disabled={sStock <= 0}
+                    >
+                      {s}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <>
+              <span className="detail-section-title">Kích cỡ / Size:</span>
+              <div className="size-selector">
+                {sizes.map(s => (
+                  <button
+                    key={s}
+                    className={`size-btn ${size === s ? 'active' : ''}`}
+                    onClick={() => setSize(s)}
+                    disabled={stockQuantity <= 0}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+
+          <span className="detail-section-title">Số lượng mua:</span>
+          <div className="add-cart-wrap">
+            <div className="qty-selector-wrapper">
+              <button
+                type="button"
+                className="qty-btn"
+                onClick={decrementQty}
+                disabled={stockQuantity <= 0 || qty <= 1}
+              >
+                <i className="fa-solid fa-minus"></i>
+              </button>
+              <input
+                type="number"
+                className="qty-input"
+                value={qty}
+                min="1"
+                max={stockQuantity || 1}
+                disabled={stockQuantity <= 0}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  if (isNaN(val)) {
+                    setQty('');
+                    setStockWarning(false);
+                    return;
+                  }
+                  if (val > stockQuantity) {
+                    setQty(stockQuantity);
+                    setStockWarning(true);
+                  } else {
+                    setQty(Math.max(1, val));
+                    setStockWarning(false);
+                  }
+                }}
+                onBlur={() => {
+                  if (qty === '' || qty < 1) {
+                    setQty(1);
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="qty-btn"
+                onClick={incrementQty}
+                disabled={stockQuantity <= 0 || qty >= stockQuantity}
+              >
+                <i className="fa-solid fa-plus"></i>
+              </button>
+            </div>
+            {stockQuantity > 0 ? (
+              <button className="btn btn-primary detail-add-cart-btn" onClick={handleAdd}>
+                <i className="fa-solid fa-cart-plus detail-cart-icon"></i> Thêm vào giỏ
+              </button>
+            ) : (
+              <button className="btn btn-secondary detail-outofstock-btn" disabled>
+                <i className="fa-solid fa-ban detail-ban-icon"></i> Đã hết hàng
+              </button>
+            )}
+          </div>
+
+          {stockWarning && (
+            <div className="stock-warning-text" style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '0.5rem', fontWeight: '500' }}>
+              <i className="fa-solid fa-circle-exclamation"></i> Số lượng đặt mua đã được tự động giới hạn ở mức tối đa tồn kho ({stockQuantity} sản phẩm).
+            </div>
+          )}
+
+          <div className="product-features">
+            <div className="feature-tag">
+              <i className="fa-solid fa-shield-halved"></i>
+              <span>Chính Hãng 100%</span>
+            </div>
+            <div className="feature-tag">
+              <i className="fa-solid fa-truck-fast"></i>
+              <span>Giao Hàng Hỏa Tốc</span>
+            </div>
+            <div className="feature-tag">
+              <i className="fa-solid fa-rotate-left"></i>
+              <span>Đổi Trả 7 Ngày</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* PHẦN MÔ TẢ CHI TIẾT SẢN PHẨM Ở DƯỚI CĂN GIỮA TRANG */}
+      <div className="product-description-section">
+        <h2 className="description-section-title">MÔ TẢ CHI TIẾT SẢN PHẨM</h2>
+        <div className="description-content ck-content" dangerouslySetInnerHTML={{ __html: product.description || 'Chưa có mô tả chi tiết cho sản phẩm này.' }} />
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetailView;
